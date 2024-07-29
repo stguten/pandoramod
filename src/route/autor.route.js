@@ -250,6 +250,8 @@ autorRoutes.put("/atualizar-autor/:id", autorController.atualizarAutorController
  * @openapi
  * /autor/deletar-autor/{id}:
  *   delete:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Autor
  *     summary: Deletar um autor pelo id
