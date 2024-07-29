@@ -13,12 +13,11 @@ document.addEventListener('submit', async function (e) {
     const data = await response.json();
     if (data.auth) { 
         localStorage.setItem('token', data.token); 
-        localStorage.setItem('user', data.userContent.nome);
+        localStorage.setItem('user', data.userProfile.nome);
         window.location.replace('/main.html');
     }else{
         alert('Usuário ou senha inválidos!');
     }
-    console.log(data);
 
 });
 

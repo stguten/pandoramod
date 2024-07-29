@@ -1,33 +1,39 @@
 import jwt from 'jsonwebtoken';
-import { getUser } from './user.controller.js';
+import * as usuarioController from "./usuario.controller.js";
 
-async function login(req, res){
-    console.log(req.body);
+async function userLogin(req, res) {
     const { username, password } = req.body;
 
-    const userContent = await getUser(username, password);
+    const userProfile = await usuarioController.pegarUsuarioController(username);
 
-    if(userContent){
-        const token = jwt.sign(userContent, "bananaseca", { expiresIn: '1h' });
-        return res.status(200).json({ auth: true, token, userContent });
+    if (userProfile && await bcrypt.compare(password, userProfile.senha)) {
+        const token = jwt.sign({ id: userProfile.id, login: userProfile.login }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        return res.status(200).json({ auth: true, token, userProfile });
     }
     return res.status(401).json({ auth: false, token: null });
 }
 
-async function verifyJWT(req, res, next){
-    const token = req.headers['authorization'].split(' ')[1];
-    if(!token) return res.status(401).json({ auth: false, message: 'No token provided' });
+async function verifyJWT(req, res, next) {
+    if (!req.headers['authorization']) return res.status(401).json({ auth: false, message: 'Acesso não autorizado, token não informado.' });
+    try {
+        const [type, token] = req.headers['authorization'].split(' ')[1];
+        if (type !== 'Bearer') return res.status(401).json({ auth: false, message: 'Acesso não autorizado, tipo de token invalido.' });
+        if (!token) return res.status(401).json({ auth: false, message: 'Acesso não autorizado, token não informado.' });
 
-    jwt.verify(token, "bananaseca", function(err, decoded){
-        if(err) return res.status(500).json({ auth: false, message: 'Failed to authenticate token' });
-        req.userId = decoded.id;
-        next();
-    });
+        jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+            if (err) return res.status(401).json({ auth: false, message: 'Acesso não autorizado, token invalido.' });
+            req.userId = decoded.id;
+            next();
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ auth: false, message: 'Erro Interno.' });
+    }
 }
 
-async function logout(req, res){
-    res.status(200).json({ auth: false, token: null, userContent: null });
+async function userLogout(_, res) {
+    res.status(200).json({ auth: false, token: null, userProfile: null });
 }
 
 
-export { login, verifyJWT, logout};
+export { userLogin, verifyJWT, userLogout };

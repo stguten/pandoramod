@@ -1,2 +1,4 @@
 node_modules
-public_old
+package-lock.json
+.data/*
+.env

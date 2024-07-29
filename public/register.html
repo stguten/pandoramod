@@ -4,25 +4,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OMSI Mods Downloader - Login</title>
+  <title>OMSI Mods Downloader - Registro</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/fontawesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
 </head>
 
-<body class="hold-transition login-page">
-  <div class="login-box">
+<body class="hold-transition register-page">
+  <div class="register-box">
     <div class="card card-outline card-primary">
       <div class="card-header text-center">
-        <div class="h2"><b>Omsi</b> Mod Downloader</div>
+        <a href="./index.html" class="h1"><b>Omsi </b>Downloader</a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg">Insira seus dados para iniciar a sessão</p>
+        <p class="login-box-msg">Cadastro de novo usuario</p>
 
         <form>
           <div class="input-group mb-3">
-            <input id="username" type="text" class="form-control" placeholder="Login">
+            <input id="nomeUsuario" type="text" class="form-control" placeholder="Nome de usuario">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3">
+            <input id="emailUsuario" type="email" class="form-control" placeholder="Email">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -30,30 +38,38 @@
             </div>
           </div>
           <div class="input-group mb-3">
-            <input id="password" type="password" class="form-control" placeholder="Senha">
+            <input id="senhaUsuario" type="password" class="form-control" placeholder="Senha">
             <div class="input-group-append">
               <div class="input-group-text">
-                <i class="fas fa-lock"></i>
+                <span class="fas fa-lock"></span>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <p><button type="submit" class="btn btn-primary btn-block">Entrar</button></p>
+          <div class="input-group mb-3">
+            <input id="confirmacaoSenhaUsuario" type="password" class="form-control" placeholder="Confirmar senha">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
             </div>
           </div>
-        </form>
-        <p class="mb-1">
-          <a href="./register.html">Registrar novo usuario</a>
-        </p>
+          <div class="row">  
+            <div class="col-md">
+              <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </div>
+          </div>
+        </form>        
+
+        <p><center>Já tem uma conta? <a href="login.html" class="text-center">Entrar</a></center></p>
       </div>
     </div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0-beta/jquery.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/adminlte.min.js" crossorigin="anonymous"></script>
-  <script src="js/login.js"></script>
+  <script src="./js/registro.js"></script>
 </body>
 
 </html>
