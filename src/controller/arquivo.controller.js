@@ -18,19 +18,17 @@ async function buscarArquivoPorIdController(req, res) {
     const { id } = req.params;
     try {
         const resultado = await arquivoRepository.buscarArquivoPorIdRepository(id);
-        const filePath = path.resolve(process.cwd(), '.data', 'arquivos', resultado.nome);
-        res.set({ 
-            'Content-Type': 'application/zip',
-            'Content-Disposition': `attachment; filename="${resultado.nome}"`,
-            //'Content-Length': resultado.tamanho
-        });
-
-        return resultado
-            ? res.status(200).sendFile(filePath)
-            : res.status(404).send(responseBuilder(404, 'Arquivo não encontrado.'));
+        
+        if (resultado) {
+            res.set({
+                'Content-Disposition': `attachment; filename="${resultado[0].nomeoriginal}"`,
+            });
+            return res.status(200).sendFile(path.resolve(process.cwd(), '.data', 'arquivos', resultado[0].nomelocal));
+        }
+        return res.status(404).json(responseBuilder(404, 'Arquivo não encontrado.'));
     } catch (e) {
         console.error(e);
-        return res.status(500).send(responseBuilder(500, `A busca gerou o seguinte erro: ${error.message}`));
+        return res.status(500).json(responseBuilder(500, `A busca gerou o seguinte erro: ${error.message}`));
     }
 }
 
@@ -64,8 +62,10 @@ async function atualizarArquivoController(req, res) {
 
 async function removerArquivoController(req, res) {
     const { id } = req.params;
+    const { hardDelete } = req.query;
     try {
-        const resultado = await arquivoRepository.removerArquivoRepository(id);
+        if(await arquivoRepository.buscarArquivoPorIdRepository(id) === null) return res.status(409).send(responseBuilder(409, 'Arquivo já deletado ou não existente na base de dados.'));
+        const resultado = await arquivoRepository.removerArquivoRepository(id, hardDelete);
         return resultado
             ? res.status(200).send(responseBuilder(200, 'Arquivo removido com sucesso.'))
             : res.status(404).send(responseBuilder(404, 'Arquivo não encontrado.'));

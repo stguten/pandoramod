@@ -6,7 +6,7 @@ async function adicionarCategoriaController(req, res) {
     try {
         const complemento = await categoriaRepository.adicionarCategoriaRepository(categoria);
         return complemento
-            ? res.status(201).send(responseBuilder(201, "Categoria adicionada com sucesso"))
+            ? res.status(201).send(responseBuilder(201, "Categoria adicionada com sucesso", complemento))
             : res.status(400).send(responseBuilder(400, "Erro ao adicionar categoria"));
     } catch (error) {
         console.log(error);
@@ -17,8 +17,8 @@ async function adicionarCategoriaController(req, res) {
 async function listarTodasAsCategoriasController(_, res) {
     try {
         const resultado = await categoriaRepository.pegarTodasAsCategoriasRepository();
-        return resultado.length > 0
-            ? res.status(200).send(responseBuilder(200, resultado))
+        return resultado
+            ? res.status(200).send(responseBuilder(200, `Foram encontrado um total de ${resultado.length} categorias.`, resultado))
             : res.status(404).send(responseBuilder(404, "Nenhuma categoria encontrada"));
     } catch (error) {
         console.log(error);
@@ -26,28 +26,38 @@ async function listarTodasAsCategoriasController(_, res) {
     }
 }
 
-async function atualizarCategoriasController(req, res) {
-    const { idCategoria } = req.params;
-    const { categoria } = req.body;
-
+async function listarPorIdCategoriaController(id) {
     try {
-        const resultado = await categoriaRepository.atualizarCategoriasRepository(idCategoria, categoria);
-        return resultado
-            ? res.status(200).send(responseBuilder(200, "Categoria atualizada com sucesso"))
-            : res.status(400).send(responseBuilder(400, "Erro ao atualizar categoria"));
+        const resultado = await categoriaRepository.listarPorIdCategoriaRepository(id);
+        return resultado ? resultado : null;
     } catch (error) {
+        throw new Error("Erro ao buscar categoria por id");
+    }
+}
+
+async function atualizarCategoriasController(req, res) {
+    const { id } = req.params;
+    try {
+        const resultado = await categoriaRepository.atualizarCategoriasRepository(id, req.body);
+        return resultado
+            ? res.status(200).send(responseBuilder(200, "Categoria atualizada com sucesso.", resultado))
+            : res.status(404).send(responseBuilder(404, "Categoria não encontrada."));
+    } catch (error) {
+        console.log(error);        
         res.status(500).send(responseBuilder(500, `A atulização gerou o seguinte erro: ${error.message}`));
     }
 }
 
 async function deletarCategoriaController(req, res) {
-    const { idCategoria } = req.params;
+    const { id } = req.params;
     try {
-        const resultado = await categoriaRepository.deletarCategoriaRepository(idCategoria);
+        if (await listarPorIdCategoriaController(id) === null) return res.status(409).send(responseBuilder(409, "Categoria já deletada ou não existente na base de dados!"));
+        const resultado = await categoriaRepository.deletarCategoriaRepository(id);
         return resultado
-            ? res.status(200).send(responseBuilder(200, "Categoria deletada com sucesso"))
-            : res.status(400).send(responseBuilder(400, "Erro ao deletar categoria"));
+            ? res.status(200).send(responseBuilder(200, "Categoria deletada com sucesso."))
+            : res.status(404).send(responseBuilder(404, "Categoria não encontrada."));
     } catch (error) {
+        console.log(error);        
         res.status(500).send(responseBuilder(500, `A deleção gerou o seguinte erro: ${error.message}`));
     }
 }

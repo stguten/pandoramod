@@ -1,24 +1,31 @@
 import pool from "../config/pg.config.js";
 
-async function adicionarComplementosRepository(nome, tipo, descricao, autor) {
+async function adicionarComplementosRepository(nome, descricao, idAutor, categoria) {
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
-        await pool.query("INSERT INTO complementos (nome, tipo, descricao, autor) VALUES ($1, $2, $3, $4)", [nome, tipo, descricao, autor]);
+        const { rows } = await client.query("INSERT INTO moddownloader.complementos (nome, descricao, idAutor, idCategoria) VALUES ($1, $2, $3, $4) RETURNING nome, descricao, idAutor, idCategoria", [nome, descricao, idAutor, categoria]);
         await client.query("COMMIT");
         client.release();
-        return true;
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
+        client.query("ROLLBACK");
         client.release();
-        return false;
+        throw Error("Erro ao adicionar complemento");
     }
 
 }
 
 async function listarTodosOsComplementosRepository() {
     try {
-        const { rows } = await pool.query(`SELECT * FROM complementos`);
+        const { rows } = await pool.query(
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            from moddownloader.complementos c
+            left join moddownloader.autores a on a.id = c.idAutor
+            left join moddownloader.categorias ct on ct.id = c.idCategoria
+            where c.status = true and c.deletadoEm is null`
+        );
         return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
@@ -26,10 +33,16 @@ async function listarTodosOsComplementosRepository() {
     }
 }
 
-async function listarComplementosPorAutorRepository(nomeAutor) {
+async function listarComplementosPorAutorRepository(idAutor) {
     try {
-        const { rows } = await pool.query(`SELECT * FROM complementos WHERE autor = $1`, [nomeAutor]);
-        return rows.length > 0 ? rows : null;        
+        const { rows } = await pool.query(
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            from moddownloader.complementos c
+            left join moddownloader.autores a on a.id = c.idAutor
+            left join moddownloader.categorias ct on ct.id = c.idCategoria
+            where c.idautor = $1 and c.status = true and c.deletadoEm is null `, [idAutor]
+        );
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error("Erro ao buscar complementos por autor");
@@ -38,18 +51,32 @@ async function listarComplementosPorAutorRepository(nomeAutor) {
 
 async function listarComplementosPorNomeRepository(nomeComplemento) {
     try {
-        const { rows } = await pool.query(`SELECT * FROM complementos WHERE nome = $1`, [nomeComplemento]);
-        return rows.length > 0 ? rows : null;        
+        const { rows } = await pool.query(
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            from moddownloader.complementos c
+            left join moddownloader.autores a on a.id = c.idAutor
+            left join moddownloader.categorias ct on ct.id = c.idCategoria
+            where c.nome like $1 and c.status = true and c.deletadoEm is null `, [`%${nomeComplemento}%`]
+        );
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error("Erro ao buscar complementos por nome");
     }
 }
 
-async function listarComplementosPorCategoriaRepository(tipoComplemento) {
+async function listarComplementosPorCategoriaRepository(idTipoComplemento) {
     try {
-        const { rows } = await pool.query(`SELECT * FROM complementos WHERE tipo = $1`, [tipoComplemento]);
-        return rows.length > 0 ? rows : null;        
+        const { rows } = await pool.query(
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            from moddownloader.complementos c
+            left join moddownloader.autores a on a.id = c.idAutor
+            left join moddownloader.categorias ct on ct.id = c.idCategoria
+            where c.idCategoria = $1 and c.status = true and c.deletadoEm is null `, [idTipoComplemento]
+        );
+        console.log(rows);
+        
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error("Erro ao buscar complementos por categoria");
@@ -58,8 +85,14 @@ async function listarComplementosPorCategoriaRepository(tipoComplemento) {
 
 async function listarComplementoPorIdRepository(idComplemento) {
     try {
-        const { rows } = await pool.query(`SELECT * FROM complementos WHERE id = $1`, [idComplemento]);
-        return rows.length > 0 ? rows : null;        
+        const { rows } = await pool.query(
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as catergoria
+            from moddownloader.complementos c
+            left join moddownloader.autores a on a.id = c.idAutor
+            left join moddownloader.categorias ct on ct.id = c.idCategoria
+            where c.id = $1 and c.status = true and c.deletadoEm is null `, [idComplemento]
+        );
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error("Erro ao buscar complemento por id");
@@ -69,19 +102,22 @@ async function listarComplementoPorIdRepository(idComplemento) {
 async function atualizarComplementoRepository(idComplemento, dadosAtualizacao) {
     const { query, params } = generateUpdateQuery("moddownloader.complementos", "id", idComplemento, dadosAtualizacao);
     try {
-        const resultado = await pool.query(query, params);
-        if (resultado.rowCount > 1) return true;
-        return false;
+        const { rows } = await pool.query(query, params);
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error(error.message);
     }
 }
 
-async function deletarComplementoRepository(idComplemento) {
+async function deletarComplementoRepository(idComplemento, hardDelete = false) {
+    let queryText = "";
     try {
-        const resultado = await pool.query('DELETE FROM complementos WHERE id = $1', [idComplemento]);
-        return resultado.rowCount > 1 ? true : false;
+        !!process.env.PARANOID_MODE && !hardDelete
+            ? queryText = "UPDATE moddownloader.complementos SET status = false, deletadoEm = CURRENT_TIMESTAMP WHERE id = $1"
+            : queryText = "DELETE FROM moddownloader.complementos WHERE id = $1";
+        const resultado = await pool.query(queryText, [idComplemento]);
+        return resultado.rowCount > 0 ? true : false;
     } catch (error) {
         console.log('Erro ao buscar registro: ', error);
         throw Error(error);

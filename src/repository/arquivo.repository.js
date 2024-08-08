@@ -1,61 +1,62 @@
 import pool from "../config/pg.config.js";
 
-async function inserirArquivoRepository(nome, hash, versao, id_complemento) {
+async function inserirArquivoRepository(nomeOriginal, nomeLocal, hash, idComplemento, idTipoArquivo, status) {    
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
-        const idArquivo = await client.query("INSERT INTO arquivos (nome, hash, versao, id_complemento) VALUES($1, $2, $3, $4)", [nome, hash, versao, id_complemento]);
+        const { rows } = await client.query("INSERT INTO moddownloader.arquivos (nomeOriginal, nomeLocal, hash, idComplemento, idTipoArquivo, status) VALUES($1, $2, $3, $4, $5, $6) RETURNING *", [nomeOriginal, nomeLocal, hash, idComplemento, idTipoArquivo, status]);
         await client.query("COMMIT");
-        return idArquivo.rowCount > 0 ? true : false;
+        return rows.length > 0 ? rows : false;
     } catch (error) {
         client.query("ROLLBACK");
-        console.error(error.message);
+        console.error(error);
         throw Error(error.message);
     }
 }
 
 async function buscarArquivoPorIdRepository(id) {
     try {
-        const { rows } = await pool.query("SELECT nome, hash, versao, status FROM moddownloader.arquivos WHERE id = $1", [id]);
-        return rows.length > 0 ? rows[0] : null;
+        const { rows } = await pool.query("SELECT id, nomeOriginal, nomeLocal, hash, idTipoArquivo FROM moddownloader.arquivos WHERE id = $1 AND deletadoEm IS null", [id]);
+        return rows.length > 0 ? rows : null;
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         throw Error(error.message);
     }
 }
 
 async function buscarArquivoPorComplementoRepository(idComplemento) {
-    try{
-        const { rows } = await pool.query("SELECT nome, hash, versao, status FROM moddownloader.arquivos WHERE id_complemento = $1", [idComplemento]);
-        return rows.length > 0 ? rows : null;
-    }catch(error){
-        console.log(error.message);
-        throw Error(error.message);
-    }
-
-}
-
-async function atualizarArquivoRepository(id, dadosAtualizacao) {
-    const { query, params } = generateUpdateQuery("moddownloader.usuario", "id", idUsuario, dadosAtualizacao);
     try {
-        const resultado = await pool.query(query, params);
-        return resultado.rowCount > 1 ? true : false;
+        const { rows } = await pool.query("SELECT id, nomeOriginal, hash, idTipoArquivo FROM moddownloader.arquivos WHERE idComplemento = $1 and status = true and deletadoEm IS null", [idComplemento]);
+        return rows.length > 0 ? rows : null;        
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
+        throw Error(error.message);
+    }
+
+}
+
+async function atualizarArquivoRepository(idUsuario, dadosAtualizacao) {
+    const { query, params } = generateUpdateQuery("moddownloader.usuarios", "id", idUsuario, dadosAtualizacao);
+    try {
+        const { rows } = await pool.query(query, params);
+        return rows.length > 0 ? rows : null;
+    } catch (error) {
+        console.log(error);
         throw Error(error.message);
     }
 }
 
-async function removerArquivoRepository(id) {
-    const client = await pool.connect();
+async function removerArquivoRepository(id, hardDelete = false) {
+    let queryText = "";
     try {
-        await client.query("BEGIN");
-        const resultado = await pool.query("DELETE FROM arquivos WHERE id = $1", [id]);
-        await client.query("COMMIT");
+        !!process.env.PARANOID_MODE && !hardDelete 
+            ? queryText = "UPDATE moddownloader.arquivos SET deletadoEm = CURRENT_TIMESTAMP WHERE id = $1" 
+            : queryText = "DELETE FROM moddownloader.arquivos WHERE id = $1";
+        const resultado = await pool.query(queryText, [id]);
         return resultado.rowCount > 0 ? true : false;
     } catch (error) {
         console.log(error);
-        throw Error(error);
+        throw Error(error.message);
     }
 }
 

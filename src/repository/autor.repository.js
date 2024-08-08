@@ -1,25 +1,26 @@
 import pool from "../config/pg.config.js";
+import { gerarUpdateQuery } from "../util/query.util.js";
 
 async function adicionarAutorRepository(nome, id_usuario) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        await client.query('INSERT INTO autores (nome, id_usuario) values ($1, $2)', [nome, id_usuario]);
+        const { rows } = await client.query('INSERT INTO moddownloader.autores (nome, id_usuario) values ($1, $2)', [nome, id_usuario]);
         await client.query('COMMIT');
         client.release();
-        return true;
+        return rows.length > 0 ? rows : null;
     } catch (err) {
         pool.query('ROLLBACK');
         console.log('Erro ao salvar registro: ', err);
         client.release();
-        return false;
+        throw Error(err.message);
     }
 }
 
 async function listarTodosOsAutoresRepository() {
     try {
-        const { rows } = await pool.query("SELECT id, nome FROM moddownloader.autores");
-        return rows;
+        const { rows } = await pool.query("SELECT id, nome FROM moddownloader.autores where deletadoEm is null");
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error("Erro ao buscar autores");
@@ -28,8 +29,8 @@ async function listarTodosOsAutoresRepository() {
 
 async function listarAutorPorIdRepository(id) {
     try {
-        const { rows } = await pool.query('SELECT * FROM autores WHERE id = $1', [id]);
-        return rows;
+        const { rows } = await pool.query('SELECT id, nome FROM moddownloader.autores WHERE id = $1 and deletadoEm is null', [id]);
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log('Erro ao buscar registro: ', error);
         throw Error(error);
@@ -37,24 +38,27 @@ async function listarAutorPorIdRepository(id) {
 }
 
 async function atualizarAutorRepository(idAutor, dadosAtualizacao) {
-    const { query, params } = generateUpdateQuery("moddownloader.autores", "id", idAutor, dadosAtualizacao);
+    const { query, params } = gerarUpdateQuery("moddownloader.autores", "id", idAutor, dadosAtualizacao);
     try {
-        const resultado = await pool.query(query, params);
-        if (resultado.rowCount > 1) return true;
-        return false;
+        const { rows } = await pool.query(query, params);
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error(error.message);
     }
 }
 
-async function deletarAutorRepository(id) {
+async function deletarAutorRepository(id, hardDelete = false) {
+    let queryText = "";
     try {
-        const resultado = await pool.query('DELETE FROM autores WHERE id = $1', [id]);
-        resultado.rowCount > 1 ? true : false;
+        !!process.env.PARANOID_MODE && !hardDelete 
+            ? queryText = "UPDATE moddownloader.autores SET deletadoEm = CURRENT_TIMESTAMP WHERE id = $1"
+            : queryText = "DELETE FROM moddownloader.autores WHERE id = $1";
+        const resultado = await pool.query(queryText, [id]);
+        return resultado.rowCount > 0 ? true : false;
     } catch (error) {
-        console.log('Erro ao buscar registro: ', error);
-        throw Error(error);
+        console.log(error);
+        throw Error(error.message);
     }
 }
 

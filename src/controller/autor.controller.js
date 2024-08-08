@@ -4,9 +4,9 @@ import { responseBuilder } from '../util/response.util.js';
 async function listarTodosOsAutoresController(_, res) {
     try {
         const autores = await autorRepository.listarTodosOsAutoresRepository();
-        return autores.length > 0 
-            ? res.status(200).send(responseBuilder(200, autores)) 
-            : res.status(404).send({ message: 'Nenhum autor encontrado' });
+        return autores
+            ? res.status(200).json(responseBuilder(200, `Foram encontrado um total de ${autores.length} autores.`, autores))
+            : res.status(404).json(responseBuilder(404, 'Nenhum autor encontrado.'));
     } catch (error) {
         console.log(error);
         return res.status(500).send({ message: error.message });
@@ -17,8 +17,9 @@ async function listarAutorPorIdController(req, res) {
     const { id } = req.params;
     try {
         const autor = await autorRepository.listarAutorPorIdRepository(id);
-        return autor.length > 0 
-            ? res.status(200).send(responseBuilder(200, autor)) 
+        console.log(autor);
+        return autor
+            ? res.status(200).send(responseBuilder(200, `Autor Encontrado`, autor))
             : res.status(404).send(responseBuilder(404, 'Autor não encontrado.'));
     } catch (error) {
         console.log(error);
@@ -29,10 +30,11 @@ async function listarAutorPorIdController(req, res) {
 async function atualizarAutorController(req, res) {
     const { id } = req.params;
     const autor = req.body;
+
     try {
         const resultado = await autorRepository.atualizarAutorRepository(id, autor);
-        return resultado 
-            ? res.status(200).send(responseBuilder(200, 'Autor atualizado com sucesso.')) 
+        return resultado
+            ? res.status(200).send(responseBuilder(200, `O autor id ${id} foi atualizado com sucesso.`, resultado))
             : res.status(404).send(responseBuilder(404, 'Autor não encontrado.'));
     } catch (error) {
         console.log(error);
@@ -43,9 +45,10 @@ async function atualizarAutorController(req, res) {
 async function deletarAutorController(req, res) {
     const { id } = req.params;
     try {
+        if(await autorRepository.listarAutorPorIdRepository(id) === null) return res.status(409).send(responseBuilder(409, 'Autor já deletado ou não existente na base de dados!'));
         const resultado = await autorRepository.deletarAutorRepository(id);
-        return resultado 
-            ? res.status(200).send(responseBuilder(200, 'Autor deletado com sucesso.')) 
+        return resultado
+            ? res.status(200).send(responseBuilder(200, 'Autor deletado com sucesso.'))
             : res.status(404).send(responseBuilder(404, 'Autor não encontrado.'));
     } catch (error) {
         console.log(error);

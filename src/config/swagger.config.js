@@ -18,6 +18,10 @@ const swaggerDefinition = {
             url: "http://localhost:3000",
             description: "Servidor Local - Desenvolvimento",
         },
+        {
+            url: "http://192.168.100.119:3000",
+            description: "Servidor em Rede - Desenvolvimento",
+        }
     ],
     tags: [
         {

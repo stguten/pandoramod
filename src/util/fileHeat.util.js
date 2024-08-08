@@ -4,8 +4,8 @@ const regexSetences = {
     map: []
 }
 
-async function regexPatterns(caminho, regexType) {
-    for (let i = 0; i < vehicleRegex.length; i++) return caminho.match(vehicleRegex[regexType][i]) ? true : false;
+async function regexPatterns(caminho) {
+    for (let i = 0; i < regexSetences.vehicle.length; i++) return caminho.match(regexSetences.vehicle[i]) ? true : false;
 }
 
 

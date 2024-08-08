@@ -196,7 +196,28 @@ usuarioRoutes.get("/logout", loginController.userLogout);
  *                   type: integer
  *                   example: 1630514040000 
  *       400:
- *         description: Categoria não encontrada
+ *         description: Erro ao Adicionar Usuario
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: Erro ao Adicionar usuario. Usuario não cadastrado.
+ *                 data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                     example: []
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000 
+ *       409:
+ *         description: Usuario já existe
  *         content:
  *           application/json:
  *             schema:

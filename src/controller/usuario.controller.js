@@ -5,34 +5,48 @@ import * as usuarioRepository from "../repository/usuario.repository.js";
 async function adicionarUsuarioController(req, res) {
     try {
         const { usuario, email, senha } = req.body;
+        if(await pegarUsuarioController(usuario)) return res.status(409).send(responseBuilder(409, "Usuário já existe"));
         const hashedPassword = await bcrypt.hash(senha, 10);
-        const resultado = await usuarioRepository.adicionarUsuarioRepository(usuario, email, hashedPassword);
-        return resultado
-            ? res.status(201).send(responseBuilder(201, "Usuário adicionado com sucesso", [{ usuario: usuario, nomeAutor: usuario }]))
-            : res.status(400).send(responseBuilder(400, "Erro ao adicionar usuário", []));
+        const perfil = await usuarioRepository.adicionarUsuarioRepository(usuario, email, hashedPassword);
+        return perfil
+            ? res.status(201).send(responseBuilder(201, "Usuário adicionado com sucesso", perfil))
+            : res.status(400).send(responseBuilder(400, "Erro ao adicionar usuário"));
     } catch (error) {
         console.log(error);
-        return res.status(500).send(responseBuilder(500, `A atulização gerou o seguinte erro: ${error.message}`, []));
+        return res.status(500).send(responseBuilder(500, `A atulização gerou o seguinte erro: ${error.message}`));
     }
 }
 
 async function pegarUsuarioController(usuario) {
     try {
-        const userProfile = await usuarioRepository.pegarUsuarioRepostiory(usuario);
+        const userProfile = await usuarioRepository.listarUsuarioPorNomeRepostiory(usuario);
+        return userProfile.length > 0 ? userProfile[0] : null;
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+async function pegarUsuarioPorIdController(id) {
+    try {
+        const userProfile = await usuarioRepository.listarUsuarioPorIdRepostiory(id);
         return userProfile ? userProfile : null;
     } catch (error) {
         console.log(error);
-        throw new Error(`A listagem gerou o seguinte erro:: ${error.message}`);
-    }
+        throw new Error(error.message);
+    }    
 }
 
 async function atualizarUsuarioController(req, res) {
     try {
-        const { username, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const resultado = await usuarioRepository.atualizarUsuarioRepository(username, email, hashedPassword);
+        const { id } = req.params;
+        const { password } = req.body;
+        if(password) req.body.password = await bcrypt.hash(password, 10);
+        console.log(req.body);
+        
+        const resultado = await usuarioRepository.atualizarUsuarioRepository(id, req.body);
         return resultado
-            ? res.status(200).send(responseBuilder(200, "Usuário atualizado com sucesso."))
+            ? res.status(200).send(responseBuilder(200, "Usuário atualizado com sucesso.", resultado))
             : res.status(400).send(responseBuilder(400, "Não foi possível atualizar o usuário."));
     } catch (error) {
         console.log(error);
@@ -41,9 +55,10 @@ async function atualizarUsuarioController(req, res) {
 }
 
 async function deletarUsuarioController(req, res) {
+    const { id } = req.params;
     try {
-        const { username } = req.params;
-        const resultado = await usuarioRepository.deletarUsuarioRepository(username);
+        if(await pegarUsuarioPorIdController(id) === null) return res.status(409).send(responseBuilder(409, "Usuário já deletado ou não existente na base de dados"));
+        const resultado = await usuarioRepository.deletarUsuarioRepository(id);
         return resultado
             ? res.status(200).send(responseBuilder(200, "Usuário deletado com sucesso"))
             : res.status(400).send(responseBuilder(400, "Erro ao deletar usuário"));

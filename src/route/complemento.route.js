@@ -3,7 +3,7 @@ import upload from "../config/multer.config.js";
 import * as loginController from "../controller/login.controller.js";
 import * as complementoController from "../controller/complemento.controller.js";
 
-const complementoFields = new Array([{ name: "logo", maxCount: 1 }, { name: "arquivo", maxCount: 1 }]);
+const complementoFields = new Array({ name: "logo", maxCount: 1 }, { name: "arquivo", maxCount: 1 });
 
 const complementoRoutes = Router();
 
@@ -11,8 +11,6 @@ const complementoRoutes = Router();
  * @openapi
  * /complemento/criar-complemento:
  *   post:
- *     security:
- *       - bearerAuth: []
  *     tags:
  *       - Complemento
  *     summary: Adiciona uma categoria pelo id

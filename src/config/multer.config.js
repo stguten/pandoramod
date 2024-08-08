@@ -3,9 +3,9 @@ import path from "path";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(process.cwd(), ".data", "arquivos"));
+        cb(null, path.resolve(process.cwd(), ".data", "arquivos"));
     },
-    filename: (req, file, cb) => {
+    filename: (req, file, cb) => {  
         cb(null, `${Date.now()}-${file.originalname}`);
     }
 });

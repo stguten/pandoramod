@@ -1,14 +1,17 @@
 import * as complementoRepository from '../repository/complemento.repository.js';
+import { fileProcessing } from '../util/fileProcessing.util.js';
 import { responseBuilder } from '../util/response.util.js';
 
 async function adicionarComplementosController(req, res) {
-    const { nome, tipo, descricao, autor } = req.body;
+    const { nome, descricao, autor, categoria } = req.body;
 
     try {
-        const complemento = await complementoRepository.adicionarComplementosRepository(nome, tipo, descricao, autor);
+        const complemento = await complementoRepository.adicionarComplementosRepository(nome, descricao, autor, categoria);
+        fileProcessing(req.files, complemento[0].id);
+
         return complemento
-            ? res.status(201).send(responseBuilder(201, 'Complemento adicionado com sucesso!'))
-            : res.status(400).send(responseBuilder(400, 'Erro ao adicionar complemento!'));
+            ? res.status(201).send(responseBuilder(201, 'Complemento adicionado com sucesso!', complemento))
+            : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
         return res.status(500).send(responseBuilder(500, `A atulização gerou o seguinte erro: ${error.message}`));
@@ -18,8 +21,8 @@ async function adicionarComplementosController(req, res) {
 async function listarTodosOsComplementosController(_, res) {
     try {
         const complementos = await complementoRepository.listarTodosOsComplementosRepository();
-        return complementos.length > 0
-            ? res.status(200).send(responseBuilder(200, complementos))
+        return complementos
+            ? res.status(200).send(responseBuilder(200, `Foram encontrados ${complementos.length} complementos.`, complementos))
             : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
@@ -31,8 +34,8 @@ async function listarComplementosPorAutorController(req, res) {
     const autor = req.params.autor;
     try {
         const complementos = await complementoRepository.listarComplementosPorAutorRepository(autor);
-        return complementos.length > 0
-            ? res.status(200).send(responseBuilder(200, complementos))
+        return complementos
+            ? res.status(200).send(responseBuilder(200, `O autor possui ${complementos.length} complementos.`, complementos))
             : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
@@ -44,9 +47,9 @@ async function listarComplementosPorNomeController(req, res) {
     const nome = req.params.nome;
 
     try {
-        const complementos = await complementoRepository.listarComplementosPorNomeRepository();
-        return complementos.length !== null
-            ? res.status(200).send(responseBuilder(200, complementos))
+        const complementos = await complementoRepository.listarComplementosPorNomeRepository(nome);
+        return complementos
+            ? res.status(200).send(responseBuilder(200, `Existem ${complementos.length} com esse nome.`, complementos))
             : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
@@ -55,11 +58,11 @@ async function listarComplementosPorNomeController(req, res) {
 }
 
 async function listarComplementosPorCategoriaController(req, res) {
-    const categoria = req.params.categoria;
+    const categoria = req.params.id;
     try {
         const complementos = await complementoRepository.listarComplementosPorCategoriaRepository(categoria);
         return complementos !== null
-            ? res.status(200).send(responseBuilder(200, complementos))
+            ? res.status(200).send(responseBuilder(200, `Existem ${complementos.length} nessa categoria.`, complementos))
             : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
@@ -70,9 +73,9 @@ async function listarComplementosPorCategoriaController(req, res) {
 async function pegarComplementoPorIdController(req, res) {
     const id = req.params.id;
     try {
-        const complemento = await complementoRepository.pegarComplementoPorIdController(id);
-        return complemento !== null
-            ? res.status(200).send(responseBuilder(200, complemento))
+        const complemento = await complementoRepository.listarComplementoPorIdRepository(id);
+        return complemento
+            ? res.status(200).send(responseBuilder(200, `Complemento Encontrado.`, complemento))
             : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
@@ -86,8 +89,8 @@ async function atualizarComplementoController(req, res) {
     try {
         const complemento = await complementoRepository.atualizarComplementoRepository(id, dadosAtualizacao);
         return complemento
-            ? res.status(200).send(responseBuilder(200, 'Complemento atualizado com sucesso!'))
-            : res.status(400).send(responseBuilder(400, 'Erro ao atualizar complemento!'));
+            ? res.status(200).send(responseBuilder(200, 'Complemento atualizado com sucesso!', complemento))
+            : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
         return res.status(500).send(responseBuilder(500, `A atulização gerou o seguinte erro: ${error.message}`));
@@ -97,10 +100,11 @@ async function atualizarComplementoController(req, res) {
 async function deletarComplementoController(req, res) {
     const id = req.params.id;
     try {
+        if (await complementoRepository.listarComplementoPorIdRepository(id) === null) return res.status(409).send(responseBuilder(409, 'Complemento já deletado ou não existente na base de dados!'));
         const resultado = await complementoRepository.deletarComplementoRepository(id);
         return resultado
             ? res.status(200).send(responseBuilder(200, 'Complemento deletado com sucesso!'))
-            : res.status(400).send(responseBuilder(400, 'Erro ao deletar complemento!'));
+            : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));
     } catch (error) {
         console.log(error);
         return res.status(500).send(responseBuilder(500, `A atulização gerou o seguinte erro: ${error.message}`));

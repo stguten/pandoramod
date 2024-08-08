@@ -1,58 +1,73 @@
 import pool from "../config/pg.config.js";
+import { gerarUpdateQuery } from "../util/query.util.js";
 
 async function adicionarUsuarioRepository(username, email, password) {
     const client = await pool.connect();
-
     try {
         await client.query('BEGIN');
-        await client.query('INSERT INTO moddownloader.usuario (login, email, senha) values ($1, $2, $3)', [username, email, password]);
-        await client.query(`INSERT INTO moddownloader.autores (nome, id_usuario) values ($1, (SELECT id FROM moddownloader.usuario WHERE login = $2))`, [username, username]);
+        const { rows } = await client.query('INSERT INTO moddownloader.usuarios (login, email, senha) values ($1, $2, $3) RETURNING *', [username, email, password]);
+        const perfil = await client.query(`INSERT INTO moddownloader.autores (nome, idUsuario) values ($1, $2) RETURNING idUsuario, nome`, [username, rows[0].id]);
         await client.query('COMMIT');
         client.release();
-        return true;
+        return perfil.rows.length > 0 ? perfil.rows : null;
     } catch (err) {
+        console.log('Erro ao salvar registro: ', err);
         pool.query('ROLLBACK');
         client.release();
-        console.log('Erro ao salvar registro: ', err);
-        throw Error(err);
+        throw Error(err.message);
     }
 }
 
-async function pegarUsuarioRepostiory(username) {
+async function listarUsuarioPorNomeRepostiory(username) {
     try {
-        const { rows } = await pool.query('SELECT id, login, senha FROM moddownloader.usuario WHERE login = $1', [username]);
-        return rows.length > 0 ? rows[0] : null;
+        const { rows } = await pool.query('SELECT * FROM moddownloader.usuarios WHERE login = $1 and deletadoEm is null', [username]);
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log('Erro ao buscar registro: ', error);
-        throw Error(error);
+        throw Error(error.message);
+    }
+}
+
+async function listarUsuarioPorIdRepostiory(id) {
+    try {
+        const { rows } = await pool.query('SELECT * FROM moddownloader.usuarios WHERE id = $1 and deletadoEm is null', [id]);
+        return rows.length > 0 ? rows : null;
+    } catch (error) {
+        console.log('Erro ao buscar registro: ', error);
+        throw Error(error.message);
     }
 }
 
 async function atualizarUsuarioRepository(idUsuario, dadosAtualizacao) {
-    const { query, params } = generateUpdateQuery("moddownloader.usuario", "id", idUsuario, dadosAtualizacao);
+    const { query, params } = gerarUpdateQuery("moddownloader.usuarios", "id", idUsuario, dadosAtualizacao);
     try {
-        const resultado = await pool.query(query, params);
-        if (resultado.rowCount > 1) return true;
-        return false;
+        const { rows } = await pool.query(query, params);
+        return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log(error);
         throw Error(error.message);
     }
 }
 
-async function deletarUsuarioRepository(idUsuario) {
-    const client = await pool.connect();
+async function deletarUsuarioRepository(idUsuario, hardDelete = false) {
+    let queryText = "";
     try {
-        await client.query('BEGIN');
-        const resultado = await pool.query('DELETE FROM moddownloader.usuario WHERE id = $1', [idUsuario]);
-        await client.query('COMMIT');
+        !!process.env.PARANOID_MODE && !hardDelete
+            ? queryText = "UPDATE moddownloader.usuarios SET deletadoEm = CURRENT_TIMESTAMP WHERE id = $1"
+            : queryText = "DELETE FROM moddownloader.usuarios WHERE id = $1";
+        const resultado = await pool.query(queryText, [idUsuario]);
         return resultado.rowCount > 0 ? true : false;
     } catch (error) {
-        client.query('ROLLBACK');
-        console.log('Erro ao deletar registro: ', error);
-        throw Error(error);
+        console.log(error);
+        throw Error(error.message);
     }
 
 }
 
-export { adicionarUsuarioRepository, pegarUsuarioRepostiory, atualizarUsuarioRepository, deletarUsuarioRepository };
+export { 
+    adicionarUsuarioRepository, 
+    listarUsuarioPorNomeRepostiory, 
+    atualizarUsuarioRepository, 
+    deletarUsuarioRepository,
+    listarUsuarioPorIdRepostiory,    
+};
