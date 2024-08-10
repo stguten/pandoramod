@@ -20,7 +20,7 @@ async function adicionarUsuarioController(req, res) {
 async function pegarUsuarioController(usuario) {
     try {
         const userProfile = await usuarioRepository.listarUsuarioPorNomeRepostiory(usuario);
-        return userProfile.length > 0 ? userProfile[0] : null;
+        return userProfile ? userProfile[0] : null;
     } catch (error) {
         console.log(error);
         throw new Error(error.message);
@@ -42,8 +42,7 @@ async function atualizarUsuarioController(req, res) {
         const { id } = req.params;
         const { password } = req.body;
         if(password) req.body.password = await bcrypt.hash(password, 10);
-        console.log(req.body);
-        
+                
         const resultado = await usuarioRepository.atualizarUsuarioRepository(id, req.body);
         return resultado
             ? res.status(200).send(responseBuilder(200, "Usuário atualizado com sucesso.", resultado))

@@ -93,7 +93,7 @@ const complementoRoutes = Router();
  *                   type: integer
  *                   example: 1630514040000 
  */
-complementoRoutes.post("/criar-complemento", upload.fields(complementoFields), complementoController.adicionarComplementosController);
+complementoRoutes.post("/criar-complemento", loginController.verifyJWT, upload.fields(complementoFields), complementoController.adicionarComplementosController);
 /**
  * @openapi
  * /complemento:
@@ -297,7 +297,7 @@ complementoRoutes.get("/nome/:nome", complementoController.listarComplementosPor
  *                   type: integer
  *                   example: 1630514040000 
  */
-complementoRoutes.get("/categoria/:id", complementoController.listarComplementosPorCategoriaController);
+complementoRoutes.get("/categoria/:id",  complementoController.listarComplementosPorCategoriaController);
 /**
  * @openapi
  * /complemento/atualizar-complemento/{id}:

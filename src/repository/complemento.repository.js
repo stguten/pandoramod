@@ -4,7 +4,7 @@ async function adicionarComplementosRepository(nome, descricao, idAutor, categor
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
-        const { rows } = await client.query("INSERT INTO moddownloader.complementos (nome, descricao, idAutor, idCategoria) VALUES ($1, $2, $3, $4) RETURNING nome, descricao, idAutor, idCategoria", [nome, descricao, idAutor, categoria]);
+        const { rows } = await client.query("INSERT INTO moddownloader.complementos (nome, descricao, idAutor, idCategoria) VALUES ($1, $2, $3, $4) RETURNING *", [nome, descricao, idAutor, categoria]);
         await client.query("COMMIT");
         client.release();
         return rows.length > 0 ? rows : null;

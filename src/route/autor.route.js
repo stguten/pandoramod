@@ -1,4 +1,5 @@
 import { Router } from "express";
+import * as loginController from "../controller/login.controller.js";
 import * as autorController from "../controller/autor.controller.js";
 
 const autorRoutes = Router();
@@ -245,7 +246,7 @@ autorRoutes.get("/:id", autorController.listarAutorPorIdController);
  *                   type: integer
  *                   example: 1630514040000 
  */
-autorRoutes.put("/atualizar-autor/:id", autorController.atualizarAutorController);
+autorRoutes.put("/atualizar-autor/:id", loginController.verifyJWT, autorController.atualizarAutorController);
 /**
  * @openapi
  * /autor/deletar-autor/{id}:
@@ -340,6 +341,6 @@ autorRoutes.put("/atualizar-autor/:id", autorController.atualizarAutorController
  *                   type: integer
  *                   example: 1630514040000 
  */
-autorRoutes.delete("/deletar-autor/:id", autorController.deletarAutorController);
+autorRoutes.delete("/deletar-autor/:id", loginController.verifyJWT, autorController.deletarAutorController);
 
 export default autorRoutes;

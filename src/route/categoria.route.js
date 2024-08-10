@@ -1,6 +1,6 @@
 import { Router } from "express";
+import * as loginController from "../controller/login.controller.js";
 import * as categorias from "../controller/categoria.controller.js";
-import { verifyJWT } from "../controller/login.controller.js";
 
 const categoriasRoutes = Router();
 
@@ -188,7 +188,7 @@ categoriasRoutes.get("/", categorias.listarTodasAsCategoriasController);
  *                   type: integer
  *                   example: 1630514040000 
  */
-categoriasRoutes.post("/criar-categoria", verifyJWT, categorias.adicionarCategoriaController);
+categoriasRoutes.post("/criar-categoria", loginController.verifyJWT, categorias.adicionarCategoriaController);
 /**
  * @openapi
  * /categoria/atualizar-categoria/{id}:
@@ -314,7 +314,7 @@ categoriasRoutes.post("/criar-categoria", verifyJWT, categorias.adicionarCategor
  *                   example: 1630514040000 
  * 
  */
-categoriasRoutes.put("/atualizar-categoria/:id", verifyJWT, categorias.atualizarCategoriasController);
+categoriasRoutes.put("/atualizar-categoria/:id", loginController.verifyJWT, categorias.atualizarCategoriasController);
 /**
  * @openapi
  * /categoria/deletar-categoria/{id}:
@@ -385,6 +385,6 @@ categoriasRoutes.put("/atualizar-categoria/:id", verifyJWT, categorias.atualizar
  *       500:
  *         description: Erro interno na consulta da categoria
  */
-categoriasRoutes.delete("/deletar-categoria/:id", verifyJWT, categorias.deletarCategoriaController);
+categoriasRoutes.delete("/deletar-categoria/:id", loginController.verifyJWT, categorias.deletarCategoriaController);
 
 export default categoriasRoutes;
