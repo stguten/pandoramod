@@ -6,7 +6,7 @@ async function adicionarUsuarioRepository(username, email, password) {
     try {
         await client.query('BEGIN');
         const { rows } = await client.query('INSERT INTO moddownloader.usuarios (login, email, senha) values ($1, $2, $3) RETURNING *', [username, email, password]);
-        const perfil = await client.query(`INSERT INTO moddownloader.autores (nome, idUsuario) values ($1, $2) RETURNING idUsuario, nome`, [username, rows[0].id]);
+        const perfil = await client.query(`INSERT INTO moddownloader.autores (nome, idUsuario) values ($1, $2) RETURNING *`, [username, rows[0].id]);
         await client.query('COMMIT');
         client.release();
         return perfil.rows.length > 0 ? perfil.rows : null;

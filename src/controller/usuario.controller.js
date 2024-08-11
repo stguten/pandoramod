@@ -67,9 +67,16 @@ async function deletarUsuarioController(req, res) {
     }
 }
 
+async function temAutoridade() {
+    const { id } = req.params;
+    if(req.userId === id || req.role === "admin") next();
+    else return res.status(401).send(responseBuilder(401, "Você não tem autoridade para realizar essa operação"));
+}
+
 export {
     adicionarUsuarioController,
     pegarUsuarioController,
     atualizarUsuarioController,
-    deletarUsuarioController
+    deletarUsuarioController,
+    temAutoridade
 }

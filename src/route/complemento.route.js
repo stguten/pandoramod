@@ -2,6 +2,7 @@ import { Router } from "express";
 import upload from "../config/multer.config.js";
 import * as loginController from "../controller/login.controller.js";
 import * as complementoController from "../controller/complemento.controller.js";
+import { temAutoridade } from "../controller/usuario.controller.js";
 
 const complementoFields = new Array({ name: "logo", maxCount: 1 }, { name: "arquivo", maxCount: 1 });
 
@@ -388,7 +389,7 @@ complementoRoutes.get("/categoria/:id",  complementoController.listarComplemento
  *                   type: integer
  *                   example: 1630514040000 
  */
-complementoRoutes.put("/atualizar-complemento/:id", loginController.verifyJWT, upload.fields(complementoFields), complementoController.atualizarComplementoController);
+complementoRoutes.put("/atualizar-complemento/:id", loginController.verifyJWT, temAutoridade, upload.fields(complementoFields), complementoController.atualizarComplementoController);
 /**
  * @openapi
  * /complemento/deletar-complemento/{id}:
@@ -457,6 +458,6 @@ complementoRoutes.put("/atualizar-complemento/:id", loginController.verifyJWT, u
  *                   type: integer
  *                   example: 1630514040000 
  */
-complementoRoutes.delete("/deletar-complemento/:id", loginController.verifyJWT, complementoController.deletarComplementoController);
+complementoRoutes.delete("/deletar-complemento/:id", loginController.verifyJWT, temAutoridade, complementoController.deletarComplementoController);
 
 export default complementoRoutes;

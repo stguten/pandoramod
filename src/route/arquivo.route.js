@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as loginController from "../controller/login.controller.js";
 import * as arquivoController from "../controller/arquivo.controller.js";
+import { temAutoridade } from "../controller/usuario.controller.js";
 
 const arquivoRoute = Router();
 
@@ -238,7 +239,7 @@ arquivoRoute.get("/complemento/:id", arquivoController.buscarArquivoPorComplemen
  *                   type: integer
  *                   example: 1630514040000 
  */
-arquivoRoute.put("/:id", loginController.verifyJWT, arquivoController.atualizarArquivoController);
+arquivoRoute.put("/:id", loginController.verifyJWT, temAutoridade, arquivoController.atualizarArquivoController);
 /**
  * @openapi
  * /arquivo/{id}:
@@ -347,6 +348,6 @@ arquivoRoute.put("/:id", loginController.verifyJWT, arquivoController.atualizarA
  *                   type: integer
  *                   example: 1630514040000 
  */
-arquivoRoute.delete("/:id", loginController.verifyJWT, arquivoController.removerArquivoController);
+arquivoRoute.delete("/:id", loginController.verifyJWT, temAutoridade, arquivoController.removerArquivoController);
 
 export default arquivoRoute;

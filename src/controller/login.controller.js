@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import * as usuarioController from "./usuario.controller.js";
-import * as autorController from "./autor.controller.js";
 import { responseBuilder } from '../util/response.util.js';
 
 async function userLogin(req, res) {
@@ -27,6 +26,7 @@ async function verifyJWT(req, res, next) {
         jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
             if (err) return res.status(401).json(responseBuilder(401, 'Acesso não autorizado, token inválido', [{ auth: false, token: null, userProfile: null }]));
             req.userId = decoded.id;
+            req.role = decoded.role;
             next();
         });
     } catch (error) {
@@ -38,6 +38,5 @@ async function verifyJWT(req, res, next) {
 async function userLogout(_, res) {
     res.status(200).json(responseBuilder(200, 'Logout efetuado com sucesso', [{ auth: false, token: null, userProfile: null }]));
 }
-
 
 export { userLogin, verifyJWT, userLogout };

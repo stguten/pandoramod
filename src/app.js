@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+
 import app from "./config/express.config.js";
 import arquivoRoute from "./route/arquivo.route.js";
 import autorRoutes from "./route/autor.route.js";

@@ -397,7 +397,7 @@ usuarioRoutes.post("/criar-usuario", usuarioController.adicionarUsuarioControlle
  *                   example: 1630514040000 
  * 
  */
-usuarioRoutes.put("/atualizar-usuario/:id", loginController.verifyJWT, usuarioController.atualizarUsuarioController);
+usuarioRoutes.put("/atualizar-usuario/:id", loginController.verifyJWT, usuarioController.temAutoridade, usuarioController.atualizarUsuarioController);
 /**
  * @openapi
  * /usuario/deletar-usuario:
@@ -507,6 +507,6 @@ usuarioRoutes.put("/atualizar-usuario/:id", loginController.verifyJWT, usuarioCo
  *                   example: 1630514040000 
  * 
  */
-usuarioRoutes.delete("/deletar-usuario/:id", loginController.verifyJWT, usuarioController.deletarUsuarioController);
+usuarioRoutes.delete("/deletar-usuario/:id", loginController.verifyJWT, usuarioController.temAutoridade, usuarioController.deletarUsuarioController);
 
 export default usuarioRoutes;
