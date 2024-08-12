@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import AdmZip from "adm-zip";
 import * as arquivoRepository from '../repository/arquivo.repository.js';
 import { regexPatterns } from "./fileHeat.util.js";
+import { atualizarComplementoRepository } from '../repository/complemento.repository.js';
 
 async function hashGenerator(filePath) {
     return new Promise((resolve, reject) => {
@@ -21,7 +22,6 @@ async function heatchecker(filePath) {
         const zip = new AdmZip(filePath);
         let pastas = zip.getEntries().filter((zipEntry) => zipEntry.isDirectory);
         let total = zip.getEntries().filter((zipEntry) => zipEntry.isDirectory).length;
-        console.log("Total:", total);
 
         for (const zipEntry of pastas) {
             if (await regexPatterns(zipEntry.entryName) === true) {
@@ -29,11 +29,10 @@ async function heatchecker(filePath) {
             }
         }
 
-        console.log("Regex total: ", num);
         const fileHeat = num / total * 100 >= 80 ? true : false;        
         return fileHeat;
-    } catch (err) {
-        console.log(err.message);
+    } catch (error) {
+        console.log(error);
         throw Error("Erro ao verificar a integralidade do arquivo");
     }
 }
@@ -41,8 +40,10 @@ async function heatchecker(filePath) {
 async function fileProcessing(files, idComplemento) {
     const { logo, arquivo } = files;   
 
-    await arquivoRepository.inserirArquivoRepository(arquivo[0].originalname, arquivo[0].filename, await hashGenerator(arquivo[0].path), idComplemento, 1, await heatchecker(arquivo[0].path));
-    await arquivoRepository.inserirArquivoRepository(logo[0].originalname, logo[0].filename, await hashGenerator(logo[0].path), idComplemento, 2, true); 
+    const arquivoResult = await arquivoRepository.inserirArquivoRepository(arquivo[0].originalname, arquivo[0].filename, await hashGenerator(arquivo[0].path), idComplemento, 1, await heatchecker(arquivo[0].path));
+    const logoResult = await arquivoRepository.inserirArquivoRepository(logo[0].originalname, logo[0].filename, await hashGenerator(logo[0].path), idComplemento, 2, true); 
+
+    await atualizarComplementoRepository(idComplemento, { ultimaVersao: arquivoResult.id, logoComplemento: logoResult.id });
 
 }
 

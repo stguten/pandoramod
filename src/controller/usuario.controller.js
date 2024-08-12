@@ -23,7 +23,7 @@ async function pegarUsuarioController(usuario) {
         return userProfile ? userProfile[0] : null;
     } catch (error) {
         console.log(error);
-        throw new Error(error.message);
+        throw Error(error.message);
     }
 }
 
@@ -33,7 +33,7 @@ async function pegarUsuarioPorIdController(id) {
         return userProfile ? userProfile : null;
     } catch (error) {
         console.log(error);
-        throw new Error(error.message);
+        throw Error(error.message);
     }    
 }
 

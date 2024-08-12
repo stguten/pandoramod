@@ -24,8 +24,8 @@ app.get("*", (_, res) => {
     res.status(404).send(responseBuilder(404, "Endpoint não encontrado."));
 });
 
-app.use((err, req, res, next) => {
-    console.error(err);
+app.use((error, req, res, next) => {
+    console.log(error);
     res.status(500).send(responseBuilder(500, "Erro interno."));
 });
 

@@ -31,7 +31,7 @@ async function listarPorIdCategoriaController(id) {
         const resultado = await categoriaRepository.listarPorIdCategoriaRepository(id);
         return resultado ? resultado : null;
     } catch (error) {
-        throw new Error("Erro ao buscar categoria por id");
+        throw Error("Erro ao buscar categoria por id");
     }
 }
 

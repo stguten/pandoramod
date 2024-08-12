@@ -10,8 +10,8 @@ async function adicionarAutorRepository(nome, id_usuario) {
         client.release();
         return rows.length > 0 ? rows : null;
     } catch (err) {
-        pool.query('ROLLBACK');
         console.log('Erro ao salvar registro: ', err);
+        pool.query('ROLLBACK');
         client.release();
         throw Error(err.message);
     }
