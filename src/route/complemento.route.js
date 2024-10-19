@@ -2,7 +2,7 @@ import { Router } from "express";
 import upload from "../config/multer.config.js";
 import * as loginController from "../controller/login.controller.js";
 import * as complementoController from "../controller/complemento.controller.js";
-import { temAutoridade } from "../controller/usuario.controller.js";
+import { temAutoridade } from "../validadores/usuario.validador.js";
 
 const complementoFields = new Array({ name: "logo", maxCount: 1 }, { name: "arquivo", maxCount: 1 });
 

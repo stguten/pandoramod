@@ -1,0 +1,61 @@
+CREATE TABLE moddownloader.arquivos(
+	id SERIAL NOT NULL PRIMARY KEY,
+	nome_arquivo TEXT NOT NULL,
+	hash TEXT NOT NULL,
+	localizacao TEXT NOT NULL,
+	id_complemento INTEGER NOT NULL,
+	id_tipo_arquivo SMALLINT NOT NULL,
+	status BOOL NOT NULL,
+	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	deletado_em	TIMESTAMP	
+);
+
+CREATE TABLE moddownloader.tipo_arquivos(
+	id SERIAL NOT NULL PRIMARY KEY,
+	descricao TEXT NOT NULL
+);
+
+CREATE TABLE moddownloader.usuarios(
+	id SERIAL NOT NULL PRIMARY KEY,
+	login TEXT NOT NULL,
+	senha TEXT NOT NULL,
+	email TEXT NOT NULL,
+	status BOOL NOT NULL,
+	administrador BOOL NOT NULL DEFAULT FALSE,
+	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	deletado_em TIMESTAMP
+);
+
+CREATE TABLE moddownloader.autores(
+	id SERIAL NOT NULL PRIMARY KEY,
+	nome TEXT NOT NULL,
+	id_usuario INTEGER NOT NULL,
+	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	deletado_em	TIMESTAMP	
+);
+
+CREATE TABLE moddownloader.complementos(
+	id SERIAL NOT NULL PRIMARY KEY,
+	nome TEXT NOT NULL,
+	descricao TEXT,
+	logo_complemento INTEGER NOT NULL,
+	id_categoria SMALLINT NOT NULL,
+	id_autor INTEGER NOT NULL,
+	ultima_versao INTEGER NOT NULL DEFAULT 0,
+	status BOOL NOT NULL,
+	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	deletado_em	TIMESTAMP	
+);
+
+CREATE TABLE moddownloader.categorias(
+	id SERIAL NOT NULL PRIMARY KEY,
+	descricao TEXT NOT NULL,
+	status BOOL NOT NULL,
+	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	deletado_em TIMESTAMP			
+);

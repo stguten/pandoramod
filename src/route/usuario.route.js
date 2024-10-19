@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as loginController from "../controller/login.controller.js";
 import * as usuarioController from "../controller/usuario.controller.js";
+import * as usuarioValidador from "../validadores/usuario.validador.js";
 
 const usuarioRoutes = Router();
 /**
@@ -137,7 +138,6 @@ usuarioRoutes.post("/login", loginController.userLogin);
  *                   example: 1630514040000 
  */
 usuarioRoutes.get("/logout", loginController.userLogout);
-
 /**
  * @openapi
  * /usuario/criar-usuario:
@@ -397,7 +397,7 @@ usuarioRoutes.post("/criar-usuario", usuarioController.adicionarUsuarioControlle
  *                   example: 1630514040000 
  * 
  */
-usuarioRoutes.put("/atualizar-usuario/:id", loginController.verifyJWT, usuarioController.temAutoridade, usuarioController.atualizarUsuarioController);
+usuarioRoutes.put("/atualizar-usuario/:id", loginController.verifyJWT, usuarioValidador.temAutoridade, usuarioController.atualizarUsuarioController);
 /**
  * @openapi
  * /usuario/deletar-usuario:
@@ -507,6 +507,6 @@ usuarioRoutes.put("/atualizar-usuario/:id", loginController.verifyJWT, usuarioCo
  *                   example: 1630514040000 
  * 
  */
-usuarioRoutes.delete("/deletar-usuario/:id", loginController.verifyJWT, usuarioController.temAutoridade, usuarioController.deletarUsuarioController);
+usuarioRoutes.delete("/deletar-usuario/:id", loginController.verifyJWT, usuarioValidador.temAutoridade, usuarioController.deletarUsuarioController);
 
 export default usuarioRoutes;

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as loginController from "../controller/login.controller.js";
 import * as categorias from "../controller/categoria.controller.js";
-import { temAutoridade } from "../controller/usuario.controller.js";
+import * as usuarioValidador from "../validadores/usuario.validador.js"
 
 const categoriasRoutes = Router();
 
@@ -315,7 +315,7 @@ categoriasRoutes.post("/criar-categoria", loginController.verifyJWT, categorias.
  *                   example: 1630514040000 
  * 
  */
-categoriasRoutes.put("/atualizar-categoria/:id", loginController.verifyJWT, temAutoridade, categorias.atualizarCategoriasController);
+categoriasRoutes.put("/atualizar-categoria/:id", loginController.verifyJWT, usuarioValidador.temAutoridade, categorias.atualizarCategoriasController);
 /**
  * @openapi
  * /categoria/deletar-categoria/{id}:
@@ -386,6 +386,9 @@ categoriasRoutes.put("/atualizar-categoria/:id", loginController.verifyJWT, temA
  *       500:
  *         description: Erro interno na consulta da categoria
  */
-categoriasRoutes.delete("/deletar-categoria/:id", loginController.verifyJWT, temAutoridade, categorias.deletarCategoriaController);
+categoriasRoutes.delete("/deletar-categoria/:id", loginController.verifyJWT, usuarioValidador.temAutoridade, categorias.deletarCategoriaController);
+
+//const rotas = categoriasRoutes.stack.map( r => r.route?.path );
+//console.log(rotas);
 
 export default categoriasRoutes;

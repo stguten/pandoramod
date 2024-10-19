@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as loginController from "../controller/login.controller.js";
 import * as autorController from "../controller/autor.controller.js";
-import { temAutoridade } from "../controller/usuario.controller.js";
+import { temAutoridade } from "../validadores/usuario.validador.js";
 
 const autorRoutes = Router();
 

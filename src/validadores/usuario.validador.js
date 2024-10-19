@@ -83,9 +83,20 @@ async function validarDadosDeDelecaoUsuario(req, res, next) {
     next();
 }
 
+
+async function temAutoridade(req, res, next) {
+    const { id } = req.params;
+    if (req.userId === id || req.role === "admin") {
+        next();
+    } else {
+        return res.status(401).send(responseBuilder(401, "Você não tem autoridade para realizar essa operação"));
+    }
+}
+
 export {
     validarDadosDeRegistroUsuario,
     validarDadosDeLoginUsuario,
     validarDadosDeAtualizacaoUsuario,
-    validarDadosDeDelecaoUsuario
+    validarDadosDeDelecaoUsuario,
+    temAutoridade
 }

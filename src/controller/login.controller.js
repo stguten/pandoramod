@@ -11,7 +11,7 @@ async function userLogin(req, res) {
     if (userProfile && await bcrypt.compare(password, userProfile.senha)) {
         userProfile = { id: userProfile.id, nome: userProfile.login, email: userProfile.email, role: userProfile.administador ? 'admin' : 'autor' };
         const token = jwt.sign(userProfile, process.env.JWT_SECRET, { expiresIn: '7d' });
-        return res.status(200).json(responseBuilder(200, 'Login efetuado com sucesso', [{ auth: true, token, userProfile}]));
+        return res.status(200).json(responseBuilder(200, 'Login efetuado com sucesso', [{ auth: true, token, userProfile }]));
     }
     return res.status(401).json(responseBuilder(401, 'Login ou senha inválidos', [{ auth: false, token: null, userProfile: null }]));
 }

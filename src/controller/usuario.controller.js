@@ -5,7 +5,7 @@ import * as usuarioRepository from "../repository/usuario.repository.js";
 async function adicionarUsuarioController(req, res) {
     try {
         const { usuario, email, senha } = req.body;
-        if(await pegarUsuarioController(usuario)) return res.status(409).send(responseBuilder(409, "Usuário já existe"));
+        if(await listarUsuarioPorNomeController(usuario)) return res.status(409).send(responseBuilder(409, "Usuário já existe"));
         const hashedPassword = await bcrypt.hash(senha, 10);
         const perfil = await usuarioRepository.adicionarUsuarioRepository(usuario, email, hashedPassword);
         return perfil
@@ -17,13 +17,13 @@ async function adicionarUsuarioController(req, res) {
     }
 }
 
-async function pegarUsuarioController(usuario) {
+async function listarUsuarioPorNomeController(usuario) {
     try {
         const userProfile = await usuarioRepository.listarUsuarioPorNomeRepostiory(usuario);
         return userProfile ? userProfile[0] : null;
     } catch (error) {
         console.log(error);
-        throw Error(error.message);
+        throw new Error(error.message);
     }
 }
 
@@ -67,16 +67,10 @@ async function deletarUsuarioController(req, res) {
     }
 }
 
-async function temAutoridade() {
-    const { id } = req.params;
-    if(req.userId === id || req.role === "admin") next();
-    else return res.status(401).send(responseBuilder(401, "Você não tem autoridade para realizar essa operação"));
-}
 
 export {
     adicionarUsuarioController,
-    pegarUsuarioController,
+    listarUsuarioPorNomeController as pegarUsuarioController,
     atualizarUsuarioController,
-    deletarUsuarioController,
-    temAutoridade
+    deletarUsuarioController
 }
