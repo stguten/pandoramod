@@ -1,61 +1,69 @@
-CREATE TABLE moddownloader.arquivos(
-	id SERIAL NOT NULL PRIMARY KEY,
-	nome_arquivo TEXT NOT NULL,
-	hash TEXT NOT NULL,
-	localizacao TEXT NOT NULL,
-	id_complemento INTEGER NOT NULL,
-	id_tipo_arquivo SMALLINT NOT NULL,
-	status BOOL NOT NULL,
-	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	deletado_em	TIMESTAMP	
+CREATE SCHEMA IF NOT EXISTS moddownloader AUTHORIZATION pixelmovies;
+
+CREATE TABLE moddownloader.arquivos (
+	id serial4 NOT NULL,
+	nomeoriginal text NOT NULL,
+	nomelocal text NOT NULL,
+	hash text NOT NULL,
+	idcomplemento int4 NOT NULL,
+	idtipoarquivo int2 NOT NULL,
+	status bool DEFAULT true NOT NULL,
+	criadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	atualizadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	deletadoem timestamp NULL,
+	CONSTRAINT arquivos_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.tipo_arquivos(
-	id SERIAL NOT NULL PRIMARY KEY,
-	descricao TEXT NOT NULL
+CREATE TABLE moddownloader.autores (
+	id serial4 NOT NULL,
+	nome text NOT NULL,
+	idusuario int4 NOT NULL,
+	criadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	atualizadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	deletadoem timestamp NULL,
+	CONSTRAINT autores_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.usuarios(
-	id SERIAL NOT NULL PRIMARY KEY,
-	login TEXT NOT NULL,
-	senha TEXT NOT NULL,
-	email TEXT NOT NULL,
-	status BOOL NOT NULL,
-	administrador BOOL NOT NULL DEFAULT FALSE,
-	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	deletado_em TIMESTAMP
+CREATE TABLE moddownloader.categorias (
+	id serial4 NOT NULL,
+	nome text NOT NULL,
+	status bool DEFAULT true NOT NULL,
+	criadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	atualizadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	deletadoem timestamp NULL,
+	CONSTRAINT categorias_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.autores(
-	id SERIAL NOT NULL PRIMARY KEY,
-	nome TEXT NOT NULL,
-	id_usuario INTEGER NOT NULL,
-	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	deletado_em	TIMESTAMP	
+CREATE TABLE moddownloader.complementos (
+	id serial4 NOT NULL,
+	nome text NOT NULL,
+	descricao text NULL,
+	logocomplemento int4 DEFAULT 1 NOT NULL,
+	idcategoria int2 NOT NULL,
+	idautor int4 NOT NULL,
+	ultimaversao int4 DEFAULT 0 NOT NULL,
+	status bool DEFAULT true NOT NULL,
+	criadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	atualizadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	deletadoem timestamp NULL,
+	CONSTRAINT complementos_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.complementos(
-	id SERIAL NOT NULL PRIMARY KEY,
-	nome TEXT NOT NULL,
-	descricao TEXT,
-	logo_complemento INTEGER NOT NULL,
-	id_categoria SMALLINT NOT NULL,
-	id_autor INTEGER NOT NULL,
-	ultima_versao INTEGER NOT NULL DEFAULT 0,
-	status BOOL NOT NULL,
-	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	deletado_em	TIMESTAMP	
+CREATE TABLE moddownloader.tipo_arquivos (
+	id serial4 NOT NULL,
+	descricao text NOT NULL,
+	CONSTRAINT tipo_arquivos_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.categorias(
-	id SERIAL NOT NULL PRIMARY KEY,
-	descricao TEXT NOT NULL,
-	status BOOL NOT NULL,
-	criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	deletado_em TIMESTAMP			
+CREATE TABLE moddownloader.usuarios (
+	id serial4 NOT NULL,
+	login text NOT NULL,
+	senha text NOT NULL,
+	email text NOT NULL,
+	status bool DEFAULT true NOT NULL,
+	adminstrador bool DEFAULT false NOT NULL,
+	criadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	atualizadoem timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	deletadoem timestamp NULL,
+	CONSTRAINT usuarios_pkey PRIMARY KEY (id)
 );

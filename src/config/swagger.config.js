@@ -5,9 +5,9 @@ const swaggerDefinition = {
     openapi: "3.1.0",
     explorer: true,
     info: {
-        title: "Omsi Complemento Downloader Api",
+        title: "Pandora Addon Downloader Api",
         version: "1.0",
-        description: "API para download de complementos do OMSI, com a finalidade de facilitar a instalação de complementos no OMSI.",
+        description: "API para download de addons do OMSI, com a finalidade de facilitar o compartilhamento de addons para o jogo.",
     },
     license: {
         name: "MIT",
@@ -15,13 +15,17 @@ const swaggerDefinition = {
     },
     servers: [
         {
+            url: "https://demo.stguten.duckdns.org/",
+            description: "Servidor em Produção - Demostração",
+        },
+        {
             url: "http://localhost:3000",
             description: "Servidor Local - Desenvolvimento",
         },
         {
             url: "http://192.168.100.119:3000",
             description: "Servidor em Rede - Desenvolvimento",
-        }
+        },
     ],
     tags: [
         {
