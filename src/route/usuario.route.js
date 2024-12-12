@@ -15,11 +15,11 @@ const usuarioRoutes = Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         application/x-www-form-urlencoded:
  *           schema:
  *             type: object
  *             properties:
- *               login:
+ *               usuario:
  *                 type: string
  *                 example: stguten
  *               senha:
@@ -149,12 +149,12 @@ usuarioRoutes.get("/logout", loginController.userLogout);
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/x-www-form-urlencoded:
  *           schema:
  *             type: object
- *             required: [login, email, senha]
+ *             required: [usuario, email, senha]
  *             properties:
- *               login:
+ *               usuario:
  *                 type: string
  *                 example: stguten
  *               email:
@@ -165,7 +165,7 @@ usuarioRoutes.get("/logout", loginController.userLogout);
  *               senha:
  *                 type: string
  *                 format: password
- *                 pattern: '^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$'
+ *                 pattern: '^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){5,16}$'
  *                 example: 123456
  *     responses:
  *       200:

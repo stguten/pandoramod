@@ -1,9 +1,9 @@
-import * as fs from 'node:fs';
-import * as crypto from 'node:crypto';
-import * as path from 'node:path';
 import AdmZip from "adm-zip";
-import * as arquivoRepository from '../repository/arquivo.repository.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
 import { regexPatterns } from "./fileHeat.util.js";
+import * as arquivoRepository from '../repository/arquivo.repository.js';
 import { atualizarComplementoRepository } from '../repository/complemento.repository.js';
 
 async function hashGenerator(filePath) {

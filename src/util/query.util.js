@@ -4,7 +4,7 @@ function gerarUpdateQuery(table, idField, idValue, fields) {
     let paramIndex = 1;
 
     for (const [k, v] of Object.entries(fields)) {
-        if (v !== undefined) {
+        if (v !== undefined && v !== null && v !== "") {
             query += ` ${k} = $${paramIndex},`;
             params.push(v);
             paramIndex++;

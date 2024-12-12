@@ -5,6 +5,7 @@ import * as usuarioRepository from "../repository/usuario.repository.js";
 async function adicionarUsuarioController(req, res) {
     try {
         const { usuario, email, senha } = req.body;
+        
         if(await listarUsuarioPorNomeController(usuario)) return res.status(409).send(responseBuilder(409, "Usuário já existe"));
         const hashedPassword = await bcrypt.hash(senha, 10);
         const perfil = await usuarioRepository.adicionarUsuarioRepository(usuario, email, hashedPassword);

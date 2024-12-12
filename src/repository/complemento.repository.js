@@ -1,4 +1,5 @@
 import pool from "../config/pg.config.js";
+import { gerarUpdateQuery } from "../util/query.util.js";
 
 async function adicionarComplementosRepository(nome, descricao, idAutor, categoria) {
     const client = await pool.connect();
@@ -86,9 +87,10 @@ async function listarComplementosPorCategoriaRepository(idTipoComplemento) {
 async function listarComplementoPorIdRepository(idComplemento) {
     try {
         const { rows } = await pool.query(
-            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as catergoria
+            `select c.id, c.nome, c.descricao, c.logoComplemento, u.id as idUsuario, a.id as idAutor, a.nome, ct.nome as categoria
             from moddownloader.complementos c
-            left join moddownloader.autores a on a.id = c.idAutor
+            left join moddownloader.autores a on a.id = c.idautor
+            left join moddownloader.usuarios u on u.id = a.idusuario 
             left join moddownloader.categorias ct on ct.id = c.idCategoria
             where c.id = $1 and c.status = true and c.deletadoEm is null `, [idComplemento]
         );
@@ -100,7 +102,7 @@ async function listarComplementoPorIdRepository(idComplemento) {
 }
 
 async function atualizarComplementoRepository(idComplemento, dadosAtualizacao) {
-    const { query, params } = generateUpdateQuery("moddownloader.complementos", "id", idComplemento, dadosAtualizacao);
+    const { query, params } = gerarUpdateQuery("moddownloader.complementos", "id", idComplemento, dadosAtualizacao);
     try {
         const { rows } = await pool.query(query, params);
         return rows.length > 0 ? rows : null;

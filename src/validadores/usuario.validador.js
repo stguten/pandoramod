@@ -1,3 +1,6 @@
+import { responseBuilder } from "../util/response.util.js";
+import * as complementoRepository from "../repository/complemento.repository.js";
+
 async function validarDadosDeRegistroUsuario(req, res, next) {
     const { username, email, password } = req.body;
     const errors = [];
@@ -83,10 +86,11 @@ async function validarDadosDeDelecaoUsuario(req, res, next) {
     next();
 }
 
-
 async function temAutoridade(req, res, next) {
-    const { id } = req.params;
-    if (req.userId === id || req.role === "admin") {
+    const { id } = req.params;    
+    const donoComplemento = await complementoRepository.listarComplementoPorIdRepository(id);
+        
+    if (req.userId === donoComplemento[0].idusuario || req.role === "admin") {
         next();
     } else {
         return res.status(401).send(responseBuilder(401, "Você não tem autoridade para realizar essa operação"));

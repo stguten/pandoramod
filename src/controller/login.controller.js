@@ -4,11 +4,11 @@ import * as usuarioController from "./usuario.controller.js";
 import { responseBuilder } from '../util/response.util.js';
 
 async function userLogin(req, res) {
-    const { username, password } = req.body;
+    const { usuario, senha } = req.body;    
 
-    let userProfile = await usuarioController.pegarUsuarioController(username);
+    let userProfile = await usuarioController.pegarUsuarioController(usuario);
 
-    if (userProfile && await bcrypt.compare(password, userProfile.senha)) {
+    if (userProfile && await bcrypt.compare(senha, userProfile.senha)) {
         userProfile = { id: userProfile.id, nome: userProfile.login, email: userProfile.email, role: userProfile.administador ? 'admin' : 'autor' };
         const token = jwt.sign(userProfile, process.env.JWT_SECRET, { expiresIn: '7d' });
         return res.status(200).json(responseBuilder(200, 'Login efetuado com sucesso', [{ auth: true, token, userProfile }]));

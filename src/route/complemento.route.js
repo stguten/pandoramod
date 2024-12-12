@@ -4,7 +4,7 @@ import * as loginController from "../controller/login.controller.js";
 import * as complementoController from "../controller/complemento.controller.js";
 import { temAutoridade } from "../validadores/usuario.validador.js";
 
-const complementoFields = new Array({ name: "logo", maxCount: 1 }, { name: "arquivo", maxCount: 1 });
+const complementoFields = [{ name: "logo", maxCount: 1 }, { name: "arquivo", maxCount: 1 }];
 
 const complementoRoutes = Router();
 
@@ -12,6 +12,8 @@ const complementoRoutes = Router();
  * @openapi
  * /complemento/criar-complemento:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     tags:
  *       - Complemento
  *     summary: Adiciona uma categoria pelo id
@@ -321,6 +323,7 @@ complementoRoutes.get("/categoria/:id",  complementoController.listarComplemento
  *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required: []
  *             properties:
  *               nome:
  *                 type: string

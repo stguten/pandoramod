@@ -5,7 +5,7 @@ async function adicionarUsuarioRepository(username, email, password) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        const { rows } = await client.query('INSERT INTO moddownloader.usuarios (login, email, senha) values ($1, $2, $3) RETURNING *', [username, email, password]);
+        const { rows } = await client.query('INSERT INTO moddownloader.usuarios (usuario, email, senha) values ($1, $2, $3) RETURNING *', [username, email, password]);
         const perfil = await client.query(`INSERT INTO moddownloader.autores (nome, idUsuario) values ($1, $2) RETURNING *`, [username, rows[0].id]);
         await client.query('COMMIT');
         client.release();
@@ -20,7 +20,7 @@ async function adicionarUsuarioRepository(username, email, password) {
 
 async function listarUsuarioPorNomeRepostiory(username) {
     try {
-        const { rows } = await pool.query('SELECT * FROM moddownloader.usuarios WHERE login = $1 and deletadoEm is null', [username]);
+        const { rows } = await pool.query('SELECT * FROM moddownloader.usuarios WHERE usuario = $1 and deletadoEm is null', [username]);
         return rows.length > 0 ? rows : null;
     } catch (error) {
         console.log('Erro ao buscar registro: ', error);
