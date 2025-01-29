@@ -15,7 +15,7 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: "https://tcc.stguten.dev.org/",
+            url: "https://tcc.stguten.dev.com/",
             description: "Servidor em Produção - Demostração",
         },
         {
