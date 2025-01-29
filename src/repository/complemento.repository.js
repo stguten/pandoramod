@@ -75,7 +75,6 @@ async function listarComplementosPorCategoriaRepository(idTipoComplemento) {
             left join moddownloader.categorias ct on ct.id = c.idCategoria
             where c.idCategoria = $1 and c.status = true and c.deletadoEm is null `, [idTipoComplemento]
         );
-        console.log(rows);
         
         return rows.length > 0 ? rows : null;
     } catch (error) {

@@ -19,15 +19,13 @@ async function buscarArquivoPorIdController(req, res) {
     try {
         const resultado = await arquivoRepository.buscarArquivoPorIdRepository(id);
         
-        if (resultado) {
-            res.set({
-                'Content-Disposition': `attachment; filename="${resultado[0].nomeoriginal}"`,
-            });
-            return res.status(200).sendFile(path.resolve(process.cwd(), '.data', 'arquivos', resultado[0].nomelocal));
+        if (Array.isArray(resultado) && resultado.length >= 1) {
+            res.setHeader('Content-Disposition', `attachment; filename="${resultado.nomeoriginal}"`);
+            return res.status(200).sendFile(path.resolve(process.cwd(), '.data', 'arquivos', resultado.nomelocal));
         }
         return res.status(404).json(responseBuilder(404, 'Arquivo não encontrado.'));
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.error(error);
         return res.status(500).json(responseBuilder(500, `A busca gerou o seguinte erro: ${error.message}`));
     }
 }
@@ -39,8 +37,8 @@ async function buscarArquivoPorComplementoController(req, res) {
         return resultado
             ? res.status(200).send(responseBuilder(200, `Foram encontrados ${resultado.length} arquivos relacionados ao complemento.`, resultado))
             : res.status(404).send(responseBuilder(404, 'Arquivo não encontrado.'));
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
         return res.status(500).send(responseBuilder(500, `A busca gerou o seguinte erro: ${error.message}`));
     }
 }
@@ -54,8 +52,8 @@ async function atualizarArquivoController(req, res) {
             ? res.status(200).json({ message: 'Arquivo atualizado com sucesso.' }) 
             : res.status(404).json({ message: 'Arquivo não encontrado.' }); */
         return res.status(200).send({ message: 'Not implemented yet' });
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
         return res.status(500).send({ message: 'Erro Interno.' });
     }
 }

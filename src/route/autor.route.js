@@ -15,20 +15,32 @@ const autorRoutes = Router();
  *     description: Lista todos os autores
  *     responses:
  *       200:
- *         description: Retorna a lista de autores
+ *         description: Retorna a lista de autores.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                  id:
- *                    type: integer
- *                    example: 1
- *                  nome:
- *                    type: string
- *                    example: José da Silva
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: A lista de autores foi retornada com sucesso. 20 autores encontrados.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       nome:
+ *                         type: string
+ *                         example: José da Silva
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000
  *       404:
  *         description: Nenhum autor encontrado
  *         content:
@@ -41,7 +53,7 @@ const autorRoutes = Router();
  *                   example: 404
  *                 message:
  *                   type: string
- *                   example: A lista de categorias foi retornada com sucesso. 20 categorias encontradas.
+ *                   example: Nenhum Autor encontrado.
  *                 data:
  *                     type: array
  *                     items:
@@ -89,20 +101,32 @@ autorRoutes.get("/", autorController.listarTodosOsAutoresController);
  *         type: integer
  *     responses:
  *       200:
- *         description: Retorna a lista de autores
+ *         description: Retorna a lista de autores.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                  id:
- *                    type: integer
- *                    example: 1
- *                  nome:
- *                    type: string
- *                    example: José da Silva
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Autor encontrado.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       nome:
+ *                         type: string
+ *                         example: José da Silva
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000
  *       404:
  *         description: Nenhum autor encontrado
  *         content:
@@ -165,18 +189,32 @@ autorRoutes.get("/:id", autorController.listarAutorPorIdController);
  *         type: integer
  *     responses:
  *       200:
- *         description: Retorna o autor atualizado
+ *         description: Retorna o autor atualizado.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 code:
  *                   type: integer
- *                   example: 1
- *                 nome:
+ *                   example: 200
+ *                 message:
  *                   type: string
- *                   example: José da Silva
+ *                   example: Autor atualizado.
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       nome:
+ *                         type: string
+ *                         example: José da Silva
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000
  *       401:
  *         description: Não autorizado. Token inválido ou usuário não autorizado.
  *         content:

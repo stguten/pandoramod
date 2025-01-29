@@ -40,7 +40,7 @@ const arquivoRoute = Router();
  *                  example: 404
  *                message:
  *                  type: string
- *                  example: Nenhum arquivo encontrado.
+ *                  example: Arquivo não encontrado.
  *                data:
  *                  type: array
  *                  items:
@@ -78,8 +78,8 @@ arquivoRoute.get("/:id", arquivoController.buscarArquivoPorIdController);
  *   get:
  *     tags: 
  *       - Arquivo
- *     summary: Busca um arquivo pelo id do complemento
- *     description: Busca um arquivo pelo id do complemento
+ *     summary: Busca uma lista de arquivos pelo id do complemento
+ *     description: Busca uma lista de arquivos pelo id do complemento
  *     parameters:
  *       - name: id
  *         in: path

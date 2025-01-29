@@ -47,7 +47,26 @@ const categoriasRoutes = Router();
  *                   type: integer
  *                   example: 1630514040000 
  *       404:
- *         description: Nenhuma categoria encontrada
+ *         description: Complemento não encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: Complemento não encontrado.
+ *                 data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                     example: []
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000
  *       500:
  *         description: Erro interno na consulta de categorias
  *         content:
@@ -382,13 +401,48 @@ categoriasRoutes.put("/atualizar-categoria/:id", loginController.verifyJWT, usua
  *                   type: integer
  *                   example: 1630514040000
  *       404:
- *         description: Categoria não encontrada
+ *         description: Autor não encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: Autor não encontrado.
+ *                 data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                     example: []
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000
  *       500:
  *         description: Erro interno na consulta da categoria
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: Ocorreu um erro interno. Tente novamente mais tarde.
+ *                 data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                     example: []
+ *                 timestamp:
+ *                   type: integer
+ *                   example: 1630514040000
  */
 categoriasRoutes.delete("/deletar-categoria/:id", loginController.verifyJWT, usuarioValidador.temAutoridade, categorias.deletarCategoriaController);
-
-//const rotas = categoriasRoutes.stack.map( r => r.route?.path );
-//console.log(rotas);
 
 export default categoriasRoutes;

@@ -1,4 +1,4 @@
-CREATE SCHEMA IF NOT EXISTS moddownloader AUTHORIZATION pixelmovies;
+CREATE SCHEMA IF NOT EXISTS moddownloader;
 
 CREATE TABLE moddownloader.arquivos (
 	id serial4 NOT NULL,

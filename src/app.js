@@ -1,18 +1,18 @@
 import app from "./config/express.config.js";
-import arquivoRoute from "./route/arquivo.route.js";
 import autorRoutes from "./route/autor.route.js";
+import swagger from "./config/swagger.config.js";
+import arquivoRoute from "./route/arquivo.route.js";
+import usuarioRoutes from "./route/usuario.route.js";
+import { responseBuilder } from "./util/response.util.js";
 import categoriasRoutes from "./route/categoria.route.js";
 import complementoRoutes from "./route/complemento.route.js";
-import usuarioRoutes from "./route/usuario.route.js";
-import swagger from "./config/swagger.config.js";
-import { responseBuilder } from "./util/response.util.js";
 
 swagger(app);
-app.use("/arquivo", arquivoRoute);
 app.use("/autor", autorRoutes);
+app.use("/arquivo", arquivoRoute);
+app.use("/usuario", usuarioRoutes);
 app.use("/categoria", categoriasRoutes);
 app.use("/complemento", complementoRoutes);
-app.use("/usuario", usuarioRoutes);
 
 app.get("/", (req, res) => {
     return res.redirect("/docs");
@@ -22,7 +22,7 @@ app.get("*", (_, res) => {
 });
 
 app.use((error, req, res, next) => {
-    console.log(error);
+    console.error(error);
     res.status(500).send(responseBuilder(500, "Erro interno."));
 });
 
