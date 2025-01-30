@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS moddownloader;
 
-CREATE TABLE moddownloader.arquivos (
+CREATE TABLE IF NOT EXISTS moddownloader.arquivos (
 	id serial4 NOT NULL,
 	nomeoriginal text NOT NULL,
 	nomelocal text NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE moddownloader.arquivos (
 	CONSTRAINT arquivos_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.autores (
+CREATE TABLE IF NOT EXISTS moddownloader.autores (
 	id serial4 NOT NULL,
 	nome text NOT NULL,
 	idusuario int4 NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE moddownloader.autores (
 	CONSTRAINT autores_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.categorias (
+CREATE TABLE IF NOT EXISTS moddownloader.categorias (
 	id serial4 NOT NULL,
 	nome text NOT NULL,
 	status bool DEFAULT true NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE moddownloader.categorias (
 	CONSTRAINT categorias_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.complementos (
+CREATE TABLE IF NOT EXISTS moddownloader.complementos (
 	id serial4 NOT NULL,
 	nome text NOT NULL,
 	descricao text NULL,
@@ -49,15 +49,15 @@ CREATE TABLE moddownloader.complementos (
 	CONSTRAINT complementos_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.tipo_arquivos (
+CREATE TABLE IF NOT EXISTS moddownloader.tipo_arquivos (
 	id serial4 NOT NULL,
 	descricao text NOT NULL,
 	CONSTRAINT tipo_arquivos_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE moddownloader.usuarios (
+CREATE TABLE IF NOT EXISTS moddownloader.usuarios (
 	id serial4 NOT NULL,
-	login text NOT NULL,
+	usuario text NOT NULL,
 	senha text NOT NULL,
 	email text NOT NULL,
 	status bool DEFAULT true NOT NULL,

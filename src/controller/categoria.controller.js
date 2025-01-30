@@ -2,9 +2,9 @@ import * as categoriaRepository from "../repository/categoria.repository.js";
 import { responseBuilder } from "../util/response.util.js";
 
 async function adicionarCategoriaController(req, res) {
-    const { categoria } = req.body;
+    const { nome } = req.body;
     try {
-        const complemento = await categoriaRepository.adicionarCategoriaRepository(categoria);
+        const complemento = await categoriaRepository.adicionarCategoriaRepository(nome);
         return complemento
             ? res.status(201).send(responseBuilder(201, "Categoria adicionada com sucesso", complemento))
             : res.status(400).send(responseBuilder(400, "Erro ao adicionar categoria"));

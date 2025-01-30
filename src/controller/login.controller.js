@@ -6,7 +6,7 @@ import { responseBuilder } from '../util/response.util.js';
 async function userLogin(req, res) {
     const { usuario, senha } = req.body;    
 
-    let userProfile = await usuarioController.pegarUsuarioController(usuario);
+    let userProfile = await usuarioController.listarUsuarioPorNomeController(usuario);
 
     if (userProfile && await bcrypt.compare(senha, userProfile.senha)) {
         userProfile = { id: userProfile.id, nome: userProfile.login, email: userProfile.email, role: userProfile.administador ? 'admin' : 'autor' };

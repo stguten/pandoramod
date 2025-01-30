@@ -71,7 +71,7 @@ async function deletarUsuarioController(req, res) {
 
 export {
     adicionarUsuarioController,
-    listarUsuarioPorNomeController as pegarUsuarioController,
+    listarUsuarioPorNomeController,
     atualizarUsuarioController,
     deletarUsuarioController
 }
