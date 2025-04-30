@@ -168,8 +168,8 @@ usuarioRoutes.get("/logout", loginController.userLogout);
  *                 pattern: '^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){5,16}$'
  *                 example: 123456
  *     responses:
- *       200:
- *         description: Categoria atualizada com sucesso
+ *       201:
+ *         description: Usuario atualizado com sucesso
  *         content:
  *           application/json:
  *             schema:

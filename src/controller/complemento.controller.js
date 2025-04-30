@@ -88,6 +88,7 @@ async function atualizarComplementoController(req, res) {
     const dadosAtualizacao = req.body;
     try {
         const complemento = await complementoRepository.atualizarComplementoRepository(id, dadosAtualizacao);
+        if(req.files.length > 0) fileProcessing(req.files, complemento[0].id);
         return complemento
             ? res.status(200).send(responseBuilder(200, 'Complemento atualizado com sucesso!', complemento))
             : res.status(404).send(responseBuilder(404, 'Nenhum complemento encontrado!'));

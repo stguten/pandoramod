@@ -17,6 +17,7 @@ app.use("/complemento", complementoRoutes);
 app.get("/", (req, res) => {
     return res.redirect("/docs");
 });
+
 app.get("*", (_, res) => {
     res.status(404).send(responseBuilder(404, "Endpoint não encontrado."));
 });

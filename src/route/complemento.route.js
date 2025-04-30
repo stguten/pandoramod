@@ -33,11 +33,11 @@ const complementoRoutes = Router();
  *                 type: string
  *                 example: Complemento atualizado do brasil colonia
  *               autor:
- *                 type: string
- *                 example: Joaozinho
+ *                 type: integer
+ *                 example: 1
  *               categoria:
- *                 type: string
- *                 example: Mapa
+ *                 type: integer
+ *                 example: 1
  *               logo:
  *                 type: string
  *                 format: binary
@@ -45,7 +45,7 @@ const complementoRoutes = Router();
  *                 type: string
  *                 format: binary               
  *     responses:
- *       200:
+ *       201:
  *         description: Retorna o complemento adicionado
  *       401:
  *         description: Não autorizado. Token inválido ou usuário não autorizado.
@@ -332,11 +332,11 @@ complementoRoutes.get("/categoria/:id",  complementoController.listarComplemento
  *                 type: string
  *                 example: Complemento atualizado do brasil colonia
  *               autor:
- *                 type: string
- *                 example: Joaozinho
+ *                 type: integer
+ *                 example: 1
  *               categoria:
- *                 type: string
- *                 example: Mapa
+ *                 type: integer
+ *                 example: 1
  *               logo:
  *                 type: string
  *                 format: binary

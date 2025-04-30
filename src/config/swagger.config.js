@@ -15,13 +15,13 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: "https://tcc.stguten.dev.br/",
-            description: "Servidor em Produção - Demostração",
-        },
-        {
             url: "http://localhost:3000",
             description: "Servidor Local - Desenvolvimento",
         },
+        {
+            url: "https://tcc.stguten.dev.br/",
+            description: "Servidor em Produção - Demostração",
+        }
     ],
     tags: [
         {

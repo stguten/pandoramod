@@ -21,7 +21,7 @@ async function adicionarComplementosRepository(nome, descricao, idAutor, categor
 async function listarTodosOsComplementosRepository() {
     try {
         const { rows } = await pool.query(
-            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome as autor, ct.nome as categoria
             from moddownloader.complementos c
             left join moddownloader.autores a on a.id = c.idAutor
             left join moddownloader.categorias ct on ct.id = c.idCategoria
@@ -37,7 +37,7 @@ async function listarTodosOsComplementosRepository() {
 async function listarComplementosPorAutorRepository(idAutor) {
     try {
         const { rows } = await pool.query(
-            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome as autor, ct.nome as categoria
             from moddownloader.complementos c
             left join moddownloader.autores a on a.id = c.idAutor
             left join moddownloader.categorias ct on ct.id = c.idCategoria
@@ -53,7 +53,7 @@ async function listarComplementosPorAutorRepository(idAutor) {
 async function listarComplementosPorNomeRepository(nomeComplemento) {
     try {
         const { rows } = await pool.query(
-            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome as autor, ct.nome as categoria
             from moddownloader.complementos c
             left join moddownloader.autores a on a.id = c.idAutor
             left join moddownloader.categorias ct on ct.id = c.idCategoria
@@ -69,7 +69,7 @@ async function listarComplementosPorNomeRepository(nomeComplemento) {
 async function listarComplementosPorCategoriaRepository(idTipoComplemento) {
     try {
         const { rows } = await pool.query(
-            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome, ct.nome as categoria
+            `select c.id, c.nome, c.descricao, c.logoComplemento, a.nome as autor, ct.nome as categoria
             from moddownloader.complementos c
             left join moddownloader.autores a on a.id = c.idAutor
             left join moddownloader.categorias ct on ct.id = c.idCategoria
@@ -86,7 +86,7 @@ async function listarComplementosPorCategoriaRepository(idTipoComplemento) {
 async function listarComplementoPorIdRepository(idComplemento) {
     try {
         const { rows } = await pool.query(
-            `select c.id, c.nome, c.descricao, c.logoComplemento, u.id as idUsuario, a.id as idAutor, a.nome, ct.nome as categoria
+            `select c.id, c.nome, c.descricao, c.logoComplemento, u.id as idUsuario, a.id as idAutor, a.nome as autor, ct.nome as categoria
             from moddownloader.complementos c
             left join moddownloader.autores a on a.id = c.idautor
             left join moddownloader.usuarios u on u.id = a.idusuario 
